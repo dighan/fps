@@ -6,9 +6,10 @@ import re
 import ConfigParser
 from optparse import OptionParser
 
-BASE_DIR = os.getcwd() + os.sep
-CONFIG_DIR = BASE_DIR + 'config.cfg'
-VERSIONS_DIR = BASE_DIR  + 'versions' + os.sep 
+class FPSPath(object):
+    BASE = os.getcwd() + os.sep
+    CONFIG = BASE + 'config.cfg'
+    ARCHIVES = BASE  + 'versions' + os.sep
 
 class FPSInstaller(object):
     def __init__(self, config):
@@ -18,7 +19,7 @@ class FPSInstaller(object):
     def get_versions(self):
         versions = []
 
-        for version in os.listdir(VERSIONS_DIR):
+        for version in os.listdir(FPSPath.ARCHIVES):
             versions.append(version)
 
         versions.sort(reverse = True)
@@ -54,7 +55,7 @@ class FPSInstaller(object):
         if not os.path.exists(install_dir):
             os.mkdir(install)
 
-        command = 'sudo cp -r "%s" "%s"' % (VERSIONS_DIR + complete_version + os.sep, install_dir)
+        command = 'sudo cp -r "%s" "%s"' % (FPSPath.ARCHIVES + complete_version + os.sep, install_dir)
         os.system(command)
 
         print 'Flash Player ' + complete_version + ' has been successfully installed !'
@@ -64,7 +65,7 @@ def main(options, args):
         raise RuntimeError('Missing argument : version argument expected.')
 
     config = ConfigParser.SafeConfigParser()
-    config.read(CONFIG_DIR)
+    config.read(FPSPath.CONFIG)
 
     installer = FPSInstaller(config)
     installer.install(args[0])
