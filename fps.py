@@ -22,7 +22,7 @@ class FPSInstaller(object):
     def get_versions(self):
         try:
             return sorted([version for version in os.listdir(FPSPath.ARCHIVES)], reverse = True)
-        except OSError, exception:
+        except OSError:
             raise FPSError('Archives folder %s does not exists' % (FPSPath.ARCHIVES))
 
     def parse_version(self, raw_version):
@@ -50,6 +50,7 @@ class FPSInstaller(object):
         install_dir = self.config.get(sys.platform, 'install_dir')
 
         # create install_dir if not exists
+        # download remote archive file
         # unzip/untar archive file
         # copy archive content to install_dir (manage permissions)
 
