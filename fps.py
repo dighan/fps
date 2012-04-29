@@ -3,11 +3,11 @@
 import sys
 import os
 import re
-import shutil
 import ConfigParser
 from optparse import OptionParser
 
 BASE_DIR = os.getcwd() + os.sep
+CONFIG_DIR = BASE_DIR + 'config.cfg'
 VERSIONS_DIR = BASE_DIR  + 'versions' + os.sep 
 
 class FPSInstaller(object):
@@ -29,51 +29,43 @@ class FPSInstaller(object):
         matches = re.match('^\d{2}(\.\d(\.\d{3}(\.\d{1,3})?)?)?$', raw_version)
 
         if matches == None:
-            raise RuntimeError('Invalid pattern')
+            raise RuntimeError('Invalid pattern.')
 
-        parsed_version = None
+        complete_version = None
 
         for version in self.versions:
             if version.startswith(raw_version):
-                parsed_version = version
+                complete_version = version
                 break
 
-        return parsed_version
+        return complete_version
 
     def install(self, version):
-        parsed_version = self.parse_version(version)
+        complete_version = self.parse_version(version)
 
-        if parsed_version == None:
-            raise RuntimeError('No version available')
+        if complete_version == None:
+            raise RuntimeError('No version available.')
 
-        if not self.config.has_section(sys.platform):
-            raise RuntimeError('Platform not yet supported')
+        if sys.platform != 'darwin':
+            raise RuntimeError('Platform not yet supported (only Mac OS X).')
 
-        install_dir_option = 'install_dir'
-
-        if sys.platform == 'win32' and sys.maxsize > 2**32:
-            install_dir = 'install_64bits_dir'
-
-        install_dir = self.config.get(sys.platform, install_dir_option)
+        install_dir = self.config.get(sys.platform, 'install_dir')
 
         if not os.path.exists(install_dir):
             os.mkdir(install)
 
-        # do the same for win32
-        os.system('sudo cp -r ' + VERSIONS_DIR + parsed_version + os.sep + ' ' + install_dir)
+        command = 'sudo cp -r "%s" "%s"' % (VERSIONS_DIR + complete_version + os.sep, install_dir)
+        os.system(command)
 
-        print 'Flash Player ' + parsed_version + ' has been successfully installed !'
+        print 'Flash Player ' + complete_version + ' has been successfully installed !'
 
 def main(options, args):
     if len(args) != 1:
-        raise RuntimeError('Missing argument : version argument expected')
+        raise RuntimeError('Missing argument : version argument expected.')
 
-
-    # loads installers.cfg file
     config = ConfigParser.SafeConfigParser()
-    config.read(BASE_DIR + 'installers.cfg')
+    config.read(CONFIG_DIR)
 
-    # installs requested Flash Player version
     installer = FPSInstaller(config)
     installer.install(args[0])
 
@@ -81,5 +73,5 @@ if __name__ == '__main__':
     try:
         parser = OptionParser()
         main(*parser.parse_args())
-    except RuntimeError, e:
-        print e
+    except RuntimeError, exception:
+        print exception
