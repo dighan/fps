@@ -20,7 +20,10 @@ class FPSInstaller(object):
         self.versions = self.get_versions()
 
     def get_versions(self):
-        return sorted([version for version in os.listdir(FPSPath.ARCHIVES)], reverse = True)
+        try:
+            return sorted([version for version in os.listdir(FPSPath.ARCHIVES)], reverse = True)
+        except OSError, exception:
+            raise FPSError('Archives folder %s does not exists' % (FPSPath.ARCHIVES))
 
     def parse_version(self, raw_version):
         if not re.match('^\d{2}(\.\d(\.\d{3}(\.\d{1,3})?)?)?$', raw_version):
