@@ -9,7 +9,7 @@ from optparse import OptionParser
 class FPSPath(object):
     BASE = os.getcwd() + os.sep
     CONFIG = BASE + 'config.cfg'
-    ARCHIVES = BASE  + 'versions' + os.sep
+    ARCHIVES = BASE  + 'archives' + os.sep
 
 class FPSInstaller(object):
     def __init__(self, config):
