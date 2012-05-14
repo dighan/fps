@@ -6,7 +6,7 @@ FPS eases installation of Flash Player. It is able to switch between all version
 # Installation
 
 * Download the archive file from the [downloads](https://github.com/dighan/fps/downloads) page. 
-* Checkout the git repository: "git clone git://github.com/dighan/fps.git".
+* Checkout the git repository: `git clone git://github.com/dighan/fps.git`
 
 # Usage
 
